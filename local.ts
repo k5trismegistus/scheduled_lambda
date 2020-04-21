@@ -1,4 +1,4 @@
-import { scheduled } from './handler'
+import { eachTwoMinutes, eachDay } from './handler'
 
 const event = {}
 
@@ -7,6 +7,8 @@ const context = {
 }
 
 switch(process.argv[2]) {
-  case 'scheduled':
-    scheduled(event, context)
+  case 'eachTwoMinutes':
+    eachTwoMinutes(event, context)
+  case 'eachDay':
+    eachDay(event, context)
 }

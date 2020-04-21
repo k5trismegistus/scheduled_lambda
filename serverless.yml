@@ -23,7 +23,11 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 
 functions:
-  hello:
-    handler: handler.scheduled
+  eachTwoMinutes:
+    handler: handler.eachTwoMinutes
     events:
       - schedule: rate(2 minutes)
+  eachDay:
+    handler: handler.eachDay
+    events:
+      - schedule: cron(5 * * * ? *)
