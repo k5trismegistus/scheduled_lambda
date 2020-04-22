@@ -25,6 +25,8 @@ const eachHourEvent = {
 switch(process.argv[2]) {
   case 'eachTwoMinutes':
     eachTwoMinutes(event, context)
+    break
   case 'eachHour':
     eachHour(eachHourEvent, context)
+    break
 }
