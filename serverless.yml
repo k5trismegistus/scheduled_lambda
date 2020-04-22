@@ -27,7 +27,7 @@ functions:
     handler: handler.eachTwoMinutes
     events:
       - schedule: rate(2 minutes)
-  eachDay:
-    handler: handler.eachDay
+  eachHour:
+    handler: handler.eachHour
     events:
       - schedule: cron(5 * * * ? *)

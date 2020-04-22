@@ -1,3 +1,4 @@
+import { datetimeToS3Prefix } from './utils'
 import * as moment from 'moment'
 import 'moment-timezone'
 import { S3 } from 'aws-sdk'
@@ -13,7 +14,7 @@ export const eachTwoMinutes = (_event, context) => {
 
   const putParams: S3.Types.PutObjectRequest = {
     Bucket: BUCKET_NAME,
-    Key: `unformatted/${dt.format('YYYYMMDDHH')}/${dt.format('HHmm')}`,
+    Key: `${datetimeToS3Prefix(dt)}/${dt.format('HHmm')}`,
     Body: `${dt.format('YYYY-MM-DD HH:mm')}`,
     ContentType: 'text/plain',
   }
@@ -28,7 +29,12 @@ export const eachTwoMinutes = (_event, context) => {
   })
 }
 
-export const eachDay = async (event, context) => {
-  console.log(event)
-  console.log(context)
+export const eachHour = async (event, context) => {
+  const calledDt = moment(event.time).tz('Asia/Tokyo')
+  console.log(calledDt.tz('Asia/Tokyo').format('YYYY-MM-DD HH:mm:ss'))
+  const targetPrefix = `${datetimeToS3Prefix(calledDt)}`
+
+  s3.
+
+  context.succeed()
 }
