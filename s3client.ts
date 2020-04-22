@@ -22,3 +22,66 @@ export const putTextFile = async (key: string, content: string) => {
     })
   })
 }
+
+const listObjectsAsync = async (listParams) => {
+  return new Promise((resolve, reject) => {
+    s3.listObjectsV2(listParams, (err, data) => {
+      if (err) {
+        console.error(err)
+        reject(err)
+      } else {
+        const result = { contents: data.Contents }
+        if (data.IsTruncated) result['nextContinuationToken'] = data.NextContinuationToken
+        resolve(result)
+      }
+    })
+  })
+}
+
+const getObjectAsync = async(key) => {
+  return new Promise((resolve, reject) => {
+    const getParams: S3.Types.GetObjectRequest = {
+      Bucket: BUCKET_NAME,
+      Key: key,
+    }
+    s3.getObject(getParams, (err, data) => {
+      if (err) {
+        console.error(err)
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
+
+export const getFilesByPrefix = async (prefix: string) => {
+  return new Promise(async (resolve, reject) => {
+    let objectList = []
+    let listParams: S3.Types.ListObjectsV2Request = {
+      Bucket: BUCKET_NAME,
+      Prefix: prefix,
+    }
+
+    while(true) {
+      try {
+        let result = await listObjectsAsync(listParams)
+        objectList =  [...objectList, ...result['contents']]
+
+        if (!result['nextContinuationToken']) {
+          break
+        }
+
+      } catch(err) {
+        console.error(err)
+        reject(err)
+        break
+      }
+    }
+
+    // 全件並列で取得してしまうので、必要に応じて
+    const fetchResult = await Promise.all(objectList.map((o) => (getObjectAsync(o.Key))))
+    const allResult = fetchResult.map(r => r['Body'].toString())
+    resolve(allResult)
+  })
+}
