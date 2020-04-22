@@ -55,7 +55,7 @@ const getObjectAsync = async(key) => {
   })
 }
 
-export const getFilesByPrefix = async (prefix: string) => {
+export const getFilesByPrefix = async (prefix: string): Promise<Array<string>> => {
   return new Promise(async (resolve, reject) => {
     let objectList = []
     let listParams: S3.Types.ListObjectsV2Request = {
